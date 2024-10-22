@@ -41,4 +41,7 @@ for k in range(inference_config["loop_epochs"]["epoch_min"],
             generator=torch.manual_seed(2048),
         ).images[0]
 
-        image.save("image_model={}_scale={:.2f}.jpg".format(number_filled, lora_weight))
+        image.save("image_ds={}_model={}_scale={:.2f}.jpg".format(
+            dataset_name, 
+            number_filled, 
+            lscale))
