@@ -385,7 +385,7 @@ def main(project_name):
     # else:
     #     print("\n🔄 Model already downloaded.\n")
 
-    model_file = './AnyLoRA_noVae_fp16-pruned.ckpt'
+    model_file = './sd_xl_base_1.0.safetensors'
     cache_model(model_file)
     
     create_config(project_name, output_folder, images_folder, log_folder, config_file, optimizer, optimizer_args, weighted_captions, model_file, dataset_config_file)
