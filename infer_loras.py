@@ -10,10 +10,10 @@ for k in range(1, 11):
 
     number = '{}'.format(k)
     number = number.zfill(6)
-    print('load:', "lauras-lauras-{}.safetensors".format(number))
+    print('load:', "lauras-{}.safetensors".format(number))
     pipe.load_lora_weights(
         "./Loras/lauras/output/lauras-{}.safetensors".format(number),
-        weight_name="lauras-lauras-{}.safetensors".format(number)) 
+        weight_name="lauras-{}.safetensors".format(number)) 
 
     prompt = "ceramic divorce"
 
