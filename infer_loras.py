@@ -9,7 +9,9 @@ pipe = StableDiffusionPipeline.from_single_file("./v1-5-pruned-emaonly.safetenso
 dataset_name = "dataset-chair"
 
 for k in range(1, 7):
-    for lora_weight in [0.25, 0.5, 0.75, 1.0, 1.25, 1.50, 1.75, 2.0, 3.0]:
+    for lora_weight_frac in range(1, 21):
+
+        lora_weight = lora_weight_frac / 20.0 * 2.0
 
         number = '{}'.format(k)
         number_filled = number.zfill(6)
