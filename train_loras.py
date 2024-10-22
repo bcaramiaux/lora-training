@@ -144,10 +144,6 @@ def validate_dataset(images_folder):
   else:
         print(f"🔮 There will be {total_steps} steps, divided into {estimated_epochs} epochs and then some.")
 
-  if total_steps > 10000:
-    print("💥 Error: Your total steps are too high. You probably made a mistake. Aborting...")
-    return
-
   if adjust_tags:
     print(f"\n📎 Weighted tags: {'ON' if weighted_captions else 'OFF'}")
     if weighted_captions:
