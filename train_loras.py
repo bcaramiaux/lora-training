@@ -10,8 +10,6 @@ training_model = "Anime (animefull-final-pruned-fp16.safetensors)"
 optional_custom_training_model_url = "" 
 custom_model_is_based_on_sd2 = False 
 
-model_url = "https://huggingface.co/Lykon/AnyLoRA/resolve/main/AnyLoRA_noVae_fp16-pruned.ckpt"
-
 custom_dataset = None
 continue_from_lora = ""
 adjust_tags = False
@@ -300,35 +298,35 @@ def create_config(project_name,
 
 
 
-def download_model(model_url):
-    #   global old_model_url, model_url, model_file
-    real_model_url = model_url.strip()
+# def download_model(model_url):
+#     #   global old_model_url, model_url, model_file
+#     real_model_url = model_url.strip()
 
-    if real_model_url.lower().endswith((".ckpt", ".safetensors")):
-        model_file = f".{real_model_url[real_model_url.rfind('/'):]}"
-    else:
-        model_file = "./downloaded_model.safetensors"
-        if os.path.exists(model_file):
-            subprocess.run(['rm', '{}'.format(model_file)])
+#     if real_model_url.lower().endswith((".ckpt", ".safetensors")):
+#         model_file = f".{real_model_url[real_model_url.rfind('/'):]}"
+#     else:
+#         model_file = "./downloaded_model.safetensors"
+#         if os.path.exists(model_file):
+#             subprocess.run(['rm', '{}'.format(model_file)])
 
-    if m := re.search(r"(?:https?://)?(?:www\.)?huggingface\.co/[^/]+/[^/]+/blob", model_url):
-        real_model_url = real_model_url.replace("blob", "resolve")
-    elif m := re.search(r"(?:https?://)?(?:www\\.)?civitai\.com/models/([0-9]+)(/[A-Za-z0-9-_]+)?", model_url):
-        if m.group(2):
-            model_file = f".{m.group(2)}.safetensors"
-        if m := re.search(r"modelVersionId=([0-9]+)", model_url):
-            real_model_url = f"https://civitai.com/api/download/models/{m.group(1)}"
-        else:
-            raise ValueError("optional_custom_training_model_url contains a civitai link, but the link doesn't include a modelVersionId. You can also right click the download button to copy the direct download link.")
+#     if m := re.search(r"(?:https?://)?(?:www\.)?huggingface\.co/[^/]+/[^/]+/blob", model_url):
+#         real_model_url = real_model_url.replace("blob", "resolve")
+#     elif m := re.search(r"(?:https?://)?(?:www\\.)?civitai\.com/models/([0-9]+)(/[A-Za-z0-9-_]+)?", model_url):
+#         if m.group(2):
+#             model_file = f".{m.group(2)}.safetensors"
+#         if m := re.search(r"modelVersionId=([0-9]+)", model_url):
+#             real_model_url = f"https://civitai.com/api/download/models/{m.group(1)}"
+#         else:
+#             raise ValueError("optional_custom_training_model_url contains a civitai link, but the link doesn't include a modelVersionId. You can also right click the download button to copy the direct download link.")
 
-    if model_file.lower().endswith(".ckpt"):
-        from torch import load as load_ckpt
-        try:
-            test = load_ckpt(model_file)
-            del test
-        except:
-            return False
-    return True
+#     if model_file.lower().endswith(".ckpt"):
+#         from torch import load as load_ckpt
+#         try:
+#             test = load_ckpt(model_file)
+#             del test
+#         except:
+#             return False
+#     return True
 
 def main(project_name):
 
@@ -355,21 +353,24 @@ def main(project_name):
     dataset_config_file = os.path.join(config_folder, "dataset_config.toml")
     accelerate_config_file = os.path.join(repo_dir, "accelerate_config/config.yaml")
 
+    model_url = "./models/AnyLoRA_noVae_fp16-pruned.ckpt"
+    model_file = "./models/AnyLoRA_noVae_fp16-pruned.ckpt"
+
     for dir in (main_dir, deps_dir, repo_dir, log_folder, images_folder, output_folder, config_folder):
         os.makedirs(dir, exist_ok=True)
 
     if not validate_dataset(images_folder):
         return
  
-    # if old_model_url != model_url or not model_file or not os.path.exists(model_file):
-    if not model_file or not os.path.exists(model_file):
-        print("\n🔄 Downloading model...")
-        if not download_model(model_url):
-            print("\n💥 Error: The model you selected is invalid or corrupted, or couldn't be downloaded. You can use a civitai or huggingface link, or any direct download link.")
-            return
-        print()
-    else:
-        print("\n🔄 Model already downloaded.\n")
+    # # if old_model_url != model_url or not model_file or not os.path.exists(model_file):
+    # if not model_file or not os.path.exists(model_file):
+    #     print("\n🔄 Downloading model...")
+    #     if not download_model(model_url):
+    #         print("\n💥 Error: The model you selected is invalid or corrupted, or couldn't be downloaded. You can use a civitai or huggingface link, or any direct download link.")
+    #         return
+    #     print()
+    # else:
+    #     print("\n🔄 Model already downloaded.\n")
 
     create_config(project_name, output_folder, images_folder, log_folder, config_file, optimizer, optimizer_args, weighted_captions, model_file, dataset_config_file)
 
