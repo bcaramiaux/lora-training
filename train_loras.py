@@ -326,6 +326,9 @@ def download_model(model_url):
             del test
         except:
             return False
+
+    print('-- ', model_file, model_url)
+
     return True
 
 def main(project_name):
@@ -354,14 +357,6 @@ def main(project_name):
     accelerate_config_file = os.path.join(repo_dir, "accelerate_config/config.yaml")
 
     model_url = "./models/AnyLoRA_noVae_fp16-pruned.ckpt"
-    model_file = "./models/AnyLoRA_noVae_fp16-pruned.ckpt"
-    if model_file.lower().endswith(".ckpt"):
-        from torch import load as load_ckpt
-        try:
-            test = load_ckpt(model_file)
-            del test
-        except:
-            return False
 
     for dir in (main_dir, deps_dir, repo_dir, log_folder, images_folder, output_folder, config_folder):
         os.makedirs(dir, exist_ok=True)
@@ -369,15 +364,15 @@ def main(project_name):
     if not validate_dataset(images_folder):
         return
  
-    # # if old_model_url != model_url or not model_file or not os.path.exists(model_file):
-    # if not model_file or not os.path.exists(model_file):
-    #     print("\n🔄 Downloading model...")
-    #     if not download_model(model_url):
-    #         print("\n💥 Error: The model you selected is invalid or corrupted, or couldn't be downloaded. You can use a civitai or huggingface link, or any direct download link.")
-    #         return
-    #     print()
-    # else:
-    #     print("\n🔄 Model already downloaded.\n")
+    # if old_model_url != model_url or not model_file or not os.path.exists(model_file):
+    if not model_file or not os.path.exists(model_file):
+        print("\n🔄 Downloading model...")
+        if not download_model(model_url):
+            print("\n💥 Error: The model you selected is invalid or corrupted, or couldn't be downloaded. You can use a civitai or huggingface link, or any direct download link.")
+            return
+        print()
+    else:
+        print("\n🔄 Model already downloaded.\n")
 
     create_config(project_name, output_folder, images_folder, log_folder, config_file, optimizer, optimizer_args, weighted_captions, model_file, dataset_config_file)
 
