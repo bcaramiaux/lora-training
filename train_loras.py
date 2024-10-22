@@ -301,6 +301,7 @@ def create_config(project_name,
 def download_model(model_url):
     #   global old_model_url, model_url, model_file
     real_model_url = model_url.strip()
+    print('-- ', real_model_url)
 
     if real_model_url.lower().endswith((".ckpt", ".safetensors")):
         model_file = f".{real_model_url[real_model_url.rfind('/'):]}"
@@ -318,6 +319,7 @@ def download_model(model_url):
             real_model_url = f"https://civitai.com/api/download/models/{m.group(1)}"
         else:
             raise ValueError("optional_custom_training_model_url contains a civitai link, but the link doesn't include a modelVersionId. You can also right click the download button to copy the direct download link.")
+    print('-- ', real_model_url)
 
     if model_file.lower().endswith(".ckpt"):
         from torch import load as load_ckpt
