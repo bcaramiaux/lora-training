@@ -9,11 +9,11 @@ pipe = StableDiffusionPipeline.from_single_file("./v1-5-pruned-emaonly.safetenso
 for k in range(1, 11):
 
     number = '{}'.format(k)
-    number = number.zfill(6)
-    print('load:', "lauras-{}.safetensors".format(number))
+    number_filled = number.zfill(6)
+    print('load:', "lauras-{}.safetensors".format(number_filled))
     pipe.load_lora_weights(
-        "./Loras/lauras/output/lauras-{}.safetensors".format(number),
-        weight_name="lauras-{}.safetensors".format(number)) 
+        "./Loras/lauras/output/lauras-{}.safetensors".format(number_filled),
+        weight_name="lauras-{}.safetensors".format(number_filled)) 
 
     prompt = "ceramic divorce"
 
@@ -27,4 +27,4 @@ for k in range(1, 11):
         generator=seed,
     ).images[0]
 
-    image.save("image-model={}.jpg".format(number))
+    image.save("image-model={}.jpg".format(number_filled))
