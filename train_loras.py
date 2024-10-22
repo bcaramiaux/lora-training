@@ -298,35 +298,35 @@ def create_config(project_name,
 
 
 
-# def download_model(model_url):
-#     #   global old_model_url, model_url, model_file
-#     real_model_url = model_url.strip()
+def download_model(model_url):
+    #   global old_model_url, model_url, model_file
+    real_model_url = model_url.strip()
 
-#     if real_model_url.lower().endswith((".ckpt", ".safetensors")):
-#         model_file = f".{real_model_url[real_model_url.rfind('/'):]}"
-#     else:
-#         model_file = "./downloaded_model.safetensors"
-#         if os.path.exists(model_file):
-#             subprocess.run(['rm', '{}'.format(model_file)])
+    if real_model_url.lower().endswith((".ckpt", ".safetensors")):
+        model_file = f".{real_model_url[real_model_url.rfind('/'):]}"
+    else:
+        model_file = "./downloaded_model.safetensors"
+        if os.path.exists(model_file):
+            subprocess.run(['rm', '{}'.format(model_file)])
 
-#     if m := re.search(r"(?:https?://)?(?:www\.)?huggingface\.co/[^/]+/[^/]+/blob", model_url):
-#         real_model_url = real_model_url.replace("blob", "resolve")
-#     elif m := re.search(r"(?:https?://)?(?:www\\.)?civitai\.com/models/([0-9]+)(/[A-Za-z0-9-_]+)?", model_url):
-#         if m.group(2):
-#             model_file = f".{m.group(2)}.safetensors"
-#         if m := re.search(r"modelVersionId=([0-9]+)", model_url):
-#             real_model_url = f"https://civitai.com/api/download/models/{m.group(1)}"
-#         else:
-#             raise ValueError("optional_custom_training_model_url contains a civitai link, but the link doesn't include a modelVersionId. You can also right click the download button to copy the direct download link.")
+    if m := re.search(r"(?:https?://)?(?:www\.)?huggingface\.co/[^/]+/[^/]+/blob", model_url):
+        real_model_url = real_model_url.replace("blob", "resolve")
+    elif m := re.search(r"(?:https?://)?(?:www\\.)?civitai\.com/models/([0-9]+)(/[A-Za-z0-9-_]+)?", model_url):
+        if m.group(2):
+            model_file = f".{m.group(2)}.safetensors"
+        if m := re.search(r"modelVersionId=([0-9]+)", model_url):
+            real_model_url = f"https://civitai.com/api/download/models/{m.group(1)}"
+        else:
+            raise ValueError("optional_custom_training_model_url contains a civitai link, but the link doesn't include a modelVersionId. You can also right click the download button to copy the direct download link.")
 
-#     if model_file.lower().endswith(".ckpt"):
-#         from torch import load as load_ckpt
-#         try:
-#             test = load_ckpt(model_file)
-#             del test
-#         except:
-#             return False
-#     return True
+    if model_file.lower().endswith(".ckpt"):
+        from torch import load as load_ckpt
+        try:
+            test = load_ckpt(model_file)
+            del test
+        except:
+            return False
+    return True
 
 def main(project_name):
 
@@ -355,6 +355,13 @@ def main(project_name):
 
     model_url = "./models/AnyLoRA_noVae_fp16-pruned.ckpt"
     model_file = "./models/AnyLoRA_noVae_fp16-pruned.ckpt"
+    if model_file.lower().endswith(".ckpt"):
+        from torch import load as load_ckpt
+        try:
+            test = load_ckpt(model_file)
+            del test
+        except:
+            return False
 
     for dir in (main_dir, deps_dir, repo_dir, log_folder, images_folder, output_folder, config_folder):
         os.makedirs(dir, exist_ok=True)
