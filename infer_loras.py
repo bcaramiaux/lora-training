@@ -20,3 +20,4 @@ image = pipe(
     generator=torch.manual_seed(0)
 ).images[0]
 
+print(image)
