@@ -367,7 +367,7 @@ def main(project_name):
     dataset_config_file = os.path.join(config_folder, "dataset_config.toml")
     accelerate_config_file = os.path.join(repo_dir, "accelerate_config/config.yaml")
 
-    model_url = "./models/AnyLoRA_noVae_fp16-pruned.ckpt"
+    # model_url = "./models/AnyLoRA_noVae_fp16-pruned.ckpt"
 
     for dir in (main_dir, deps_dir, repo_dir, log_folder, images_folder, output_folder, config_folder):
         os.makedirs(dir, exist_ok=True)
