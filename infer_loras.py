@@ -6,25 +6,28 @@ import torch
 # pipe = StableDiffusionXLPipeline.from_single_file("./sd_xl_base_1.0.safetensors").to("cuda")
 pipe = StableDiffusionPipeline.from_single_file("./v1-5-pruned-emaonly.safetensors").to("cuda")
 
-for k in range(1, 11):
+dataset_name = "dataset-chair"
 
-    number = '{}'.format(k)
-    number_filled = number.zfill(6)
-    print('load:', "lauras-{}.safetensors".format(number_filled))
-    pipe.load_lora_weights(
-        "./Loras/lauras/output/lauras-{}.safetensors".format(number_filled),
-        weight_name="lauras-{}.safetensors".format(number_filled)) 
+for k in range(1, 7):
+    for lora_weight in [0.25, 0.5, 0.75, 1.0, 1.25, 1.50, 1.75, 2.0, 3.0]:
 
-    prompt = "ceramic divorce"
+        number = '{}'.format(k)
+        number_filled = number.zfill(6)
+        print('load:', "{}-{}.safetensors".format(dataset_name, number_filled))
+        pipe.load_lora_weights(
+            "./Loras/{}/output/{}-{}.safetensors".format(dataset_name, dataset_name, number_filled),
+            weight_name="{}-{}.safetensors".format(dataset_name, number_filled)) 
 
-    lora_scale = 1.2
-    seed = 2048
+        prompt = "foam divorce"
 
-    image = pipe(
-        prompt, 
-        num_inference_steps=30, 
-        cross_attention_kwargs={"scale": lora_scale}, 
-        generator=torch.manual_seed(seed),
-    ).images[0]
+        lora_scale = lora_weight
+        seed = 2048
 
-    image.save("image-model={}.jpg".format(number_filled))
+        image = pipe(
+            prompt, 
+            num_inference_steps=30, 
+            cross_attention_kwargs={"scale": lora_scale}, 
+            generator=torch.manual_seed(seed),
+        ).images[0]
+
+        image.save("image_model={}_scale={:.2f}.jpg".format(number_filled, lora_weight))
