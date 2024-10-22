@@ -1,35 +1,44 @@
 from diffusers import DiffusionPipeline, StableDiffusionPipeline, StableDiffusionXLPipeline
 import torch
+import yaml
+import numpy as np
 
-# pipe_id = "stabilityai/stable-diffusion-xl-base-1.0"
-# pipe = DiffusionPipeline.from_pretrained(pipe_id, torch_dtype=torch.float16).to("cuda")
-# pipe = StableDiffusionXLPipeline.from_single_file("./sd_xl_base_1.0.safetensors").to("cuda")
-pipe = StableDiffusionPipeline.from_single_file("./v1-5-pruned-emaonly.safetensors").to("cuda")
+with open('config.yml', 'r') as file:
+    inference_config = yaml.safe_load(file)
 
-dataset_name = "dataset-chair"
 
-for k in range(1, 7):
-    for lora_weight_frac in range(1, 21):
+if "sd_xl_base" in inference_config['model']:
+    sd_pipeline = StableDiffusionXLPipeline
+else:
+    sd_pipeline = StableDiffusionPipeline
+pipe = sd_pipeline.from_single_file("./{}".format(inference_config['model'])).to("cuda")
 
-        lora_weight = lora_weight_frac / 20.0 * 2.0
+dataset_name = inference_config["dataset"]
 
-        number = '{}'.format(k)
-        number_filled = number.zfill(6)
-        print('load:', "{}-{}.safetensors".format(dataset_name, number_filled))
-        pipe.load_lora_weights(
-            "./Loras/{}/output/{}-{}.safetensors".format(dataset_name, dataset_name, number_filled),
-            weight_name="{}-{}.safetensors".format(dataset_name, number_filled)) 
+for k in range(inference_config["loop_epoch"]["epoch_min"],
+               inference_config["loop_epoch"]["epoch_max"]):
 
+    number = '{}'.format(k)
+    number_filled = number.zfill(6)
+    pipe.load_lora_weights(
+        "./Loras/{}/output/{}-{}.safetensors".format(dataset_name, dataset_name, number_filled),
+        weight_name="{}-{}.safetensors".format(dataset_name, number_filled)) 
+
+    scl_min = inference_config["loop_scale"]["scale_min"]
+    scl_max = inference_config["loop_scale"]["scale_max"]
+    step = inference_config["loop_scale"]["resolution"]
+    
+    lora_scales = np.arange(scl_min, scl_max, (scl_max-scl_min)/step)
+
+    for lscale in lora_scales:
+        
         prompt = "foam divorce"
-
-        lora_scale = lora_weight
-        seed = 2048
 
         image = pipe(
             prompt, 
             num_inference_steps=30, 
-            cross_attention_kwargs={"scale": lora_scale}, 
-            generator=torch.manual_seed(seed),
+            cross_attention_kwargs={"scale": lscale}, 
+            generator=torch.manual_seed(2048),
         ).images[0]
 
         image.save("image_model={}_scale={:.2f}.jpg".format(number_filled, lora_weight))
