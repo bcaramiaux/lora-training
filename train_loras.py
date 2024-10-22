@@ -394,5 +394,6 @@ def main(project_name):
     print("\n⭐ Starting trainer...\n")
     os.system("python3 train_network_wrapper.py --dataset_config={} --config_file={}".format(dataset_config_file, config_file))
 
-project_name = "lauras"
+# project_name = "dataset-ceramics"
+project_name = "dataset-chair"
 main(project_name)
