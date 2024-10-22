@@ -24,7 +24,7 @@ for k in range(1, 11):
         prompt, 
         num_inference_steps=30, 
         cross_attention_kwargs={"scale": lora_scale}, 
-        generator=seed,
+        generator=torch.manual_seed(seed),
     ).images[0]
 
     image.save("image-model={}.jpg".format(number_filled))
