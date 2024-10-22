@@ -15,8 +15,8 @@ pipe = sd_pipeline.from_single_file("./{}".format(inference_config['model'])).to
 
 dataset_name = inference_config["dataset"]
 
-for k in range(inference_config["loop_epoch"]["epoch_min"],
-               inference_config["loop_epoch"]["epoch_max"]):
+for k in range(inference_config["loop_epochs"]["epoch_min"],
+               inference_config["loop_epochs"]["epoch_max"]):
 
     number = '{}'.format(k)
     number_filled = number.zfill(6)
@@ -24,14 +24,14 @@ for k in range(inference_config["loop_epoch"]["epoch_min"],
         "./Loras/{}/output/{}-{}.safetensors".format(dataset_name, dataset_name, number_filled),
         weight_name="{}-{}.safetensors".format(dataset_name, number_filled)) 
 
-    scl_min = inference_config["loop_scale"]["scale_min"]
-    scl_max = inference_config["loop_scale"]["scale_max"]
-    step = inference_config["loop_scale"]["resolution"]
+    scl_min = inference_config["loop_scales"]["scale_min"]
+    scl_max = inference_config["loop_scales"]["scale_max"]
+    step = inference_config["loop_scales"]["resolution"]
     
     lora_scales = np.arange(scl_min, scl_max, (scl_max-scl_min)/step)
 
     for lscale in lora_scales:
-        
+
         prompt = "foam divorce"
 
         image = pipe(
