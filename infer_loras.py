@@ -6,18 +6,25 @@ import torch
 # pipe = StableDiffusionXLPipeline.from_single_file("./sd_xl_base_1.0.safetensors").to("cuda")
 pipe = StableDiffusionPipeline.from_single_file("./v1-5-pruned-emaonly.safetensors").to("cuda")
 
-pipe.load_lora_weights(
-    "./Loras/lauras/output/lauras-000002.safetensors",
-    weight_name="lauras-000002.safetensors") 
+for k in range(1, 11):
 
-prompt = "ceramic divorce"
+    number = '{}'.format(k)
+    number = number.zfill(6)
+    print('load:', "lauras-lauras-{}.safetensors".format(number))
+    pipe.load_lora_weights(
+        "./Loras/lauras/output/lauras-{}.safetensors".format(number),
+        weight_name="lauras-lauras-{}.safetensors".format(number)) 
 
-lora_scale = 1.2
-image = pipe(
-    prompt, 
-    num_inference_steps=30, 
-    cross_attention_kwargs={"scale": lora_scale}, 
-    generator=torch.manual_seed(0)
-).images[0]
+    prompt = "ceramic divorce"
 
-image.save("image.jpg")
+    lora_scale = 1.2
+    seed = 2048
+
+    image = pipe(
+        prompt, 
+        num_inference_steps=30, 
+        cross_attention_kwargs={"scale": lora_scale}, 
+        generator=seed,
+    ).images[0]
+
+    image.save("image-model={}.jpg".format(number))
