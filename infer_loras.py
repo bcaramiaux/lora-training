@@ -3,7 +3,8 @@ import torch
 
 # pipe_id = "stabilityai/stable-diffusion-xl-base-1.0"
 # pipe = DiffusionPipeline.from_pretrained(pipe_id, torch_dtype=torch.float16).to("cuda")
-pipe = StableDiffusionXLPipeline.from_single_file("./sd_xl_base_1.0.safetensors").to("cuda")
+# pipe = StableDiffusionXLPipeline.from_single_file("./sd_xl_base_1.0.safetensors").to("cuda")
+pipe = StableDiffusionXLPipeline.from_single_file("./v1-5-pruned-emaonly.safetensors").to("cuda")
 
 pipe.load_lora_weights(weight_name="./Loras/lauras/output/lauras-000002.safetensors") 
 
