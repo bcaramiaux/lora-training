@@ -48,14 +48,13 @@ for prompt in prompts:
                 prompt, 
                 num_inference_steps=30, 
                 cross_attention_kwargs={"scale": lscale}, 
-                generator=torch.manual_seed(2048),
+                generator=torch.manual_seed(1125),
             ).images[0]
 
-            timestr = time.strftime("%Y%m%d-%H%M%S")
+            # timestr = time.strftime("%Y%m%d-%H%M%S")
             image.save(os.path.join(
-                output_path, "image_ds={}_prompt={}_model={}_scale={:.2f}_{}.jpg".format(
+                output_path, "image_ds={}_prompt={}_model={}_scale={:.4f}.jpg".format(
                     dataset_name, 
                     prompt.replace(" ", "-"),
                     number_filled, 
-                    lscale,
-                    timestr)))
+                    lscale)))
