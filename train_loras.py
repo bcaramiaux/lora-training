@@ -6,8 +6,7 @@ from IPython.display import Markdown, display
 import subprocess
 
 
-training_model = "Anime (animefull-final-pruned-fp16.safetensors)" 
-optional_custom_training_model_url = "" 
+
 custom_model_is_based_on_sd2 = False 
 
 custom_dataset = None
@@ -338,10 +337,12 @@ def cache_model(model_file):
         except:
             return False
 
-def main(project_name):
+def main():
+
+    project_name = "dataset-chair"
+    model_file = './v1-5-pruned-emaonly.safetensors'
 
     # These carry information from past executions
-    model_file = None
     override_dataset_config_file = None
     override_config_file = None
     optimizer = "AdamW8bit"
@@ -363,33 +364,18 @@ def main(project_name):
     dataset_config_file = os.path.join(config_folder, "dataset_config.toml")
     accelerate_config_file = os.path.join(repo_dir, "accelerate_config/config.yaml")
 
-    # model_url = "./models/AnyLoRA_noVae_fp16-pruned.ckpt"
-
     for dir in (main_dir, deps_dir, repo_dir, log_folder, images_folder, output_folder, config_folder):
         os.makedirs(dir, exist_ok=True)
 
     if not validate_dataset(images_folder):
         return
-     
-    # # if old_model_url != model_url or not model_file or not os.path.exists(model_file):
-    # if not model_file or not os.path.exists(model_file):
-    #     print("\n🔄 Downloading model...")
-    #     if not download_model(model_url):
-    #         print("\n💥 Error: The model you selected is invalid or corrupted, or couldn't be downloaded. You can use a civitai or huggingface link, or any direct download link.")
-    #         return
-    #     print()
-    # else:
-    #     print("\n🔄 Model already downloaded.\n")
-
-    # model_file = './sd_xl_base_1.0.safetensors'
-    model_file = './v1-5-pruned-emaonly.safetensors'
-    cache_model(model_file)
     
-    create_config(project_name, output_folder, images_folder, log_folder, config_file, optimizer, optimizer_args, weighted_captions, model_file, dataset_config_file)
+    create_config(
+        project_name, output_folder, images_folder, log_folder, config_file, optimizer, optimizer_args, weighted_captions, model_file, dataset_config_file)
 
+    
     print("\n⭐ Starting trainer...\n")
     os.system("python3 train_network_wrapper.py --dataset_config={} --config_file={}".format(dataset_config_file, config_file))
 
-# project_name = "dataset-ceramics"
-project_name = "dataset-chair"
-main(project_name)
+
+main()
