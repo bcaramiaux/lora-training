@@ -29,7 +29,7 @@ epoch_min = inference_config["loop_epochs"]["epoch_min"]
 epoch_max = inference_config["loop_epochs"]["epoch_max"]
 
 for prompt in prompts:
-    output_path = "outputs/ds={}_prompt={}".format(dataset_name, prompt)
+    output_path = "outputs/ds={}_prompt={}".format(dataset_name, prompt.replace(" ", "-"))
     pathlib.Path(output_path).mkdir(parents=True, exist_ok=True)
     for k in range(epoch_min, epoch_max):
         number = '{}'.format(k)
@@ -48,13 +48,15 @@ for prompt in prompts:
                 prompt, 
                 num_inference_steps=30, 
                 cross_attention_kwargs={"scale": lscale}, 
-                generator=torch.manual_seed(1125),
+                generator=torch.manual_seed(inference_config['seed']),
             ).images[0]
 
             # timestr = time.strftime("%Y%m%d-%H%M%S")
-            image.save(os.path.join(
+            filename = os.path.join(
                 output_path, "image_ds={}_prompt={}_model={}_scale={:.4f}.jpg".format(
                     dataset_name, 
                     prompt.replace(" ", "-"),
                     number_filled, 
-                    lscale)))
+                    lscale))
+            print("saving:", filename)
+            image.save(filename)
