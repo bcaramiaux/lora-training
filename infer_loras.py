@@ -4,6 +4,7 @@ import yaml
 import numpy as np
 import time
 import pathlib
+import os
 
 
 # get config file
