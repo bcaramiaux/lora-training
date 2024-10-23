@@ -186,7 +186,7 @@ def create_config(project_name,
                   model_file,
                   dataset_config_file):
 
-    resolution = 512
+    resolution = 800
     flip_aug = False    #Turn it off if you care about asymmetrical elements in your Lora
 
     config_dict = {
