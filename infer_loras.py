@@ -29,7 +29,7 @@ epoch_min = inference_config["loop_epochs"]["epoch_min"]
 epoch_max = inference_config["loop_epochs"]["epoch_max"]
 
 for prompt in prompts:
-    output_path = "outputs/ds={}_prompt={}".format(dataset_name, prompt.replace(" ", "-"))
+    output_path = "outputs/ds={}_prompt={}_seed={}".format(dataset_name, prompt.replace(" ", "-"), inference_config['seed'])
     pathlib.Path(output_path).mkdir(parents=True, exist_ok=True)
     for k in range(epoch_min, epoch_max):
         number = '{}'.format(k)
