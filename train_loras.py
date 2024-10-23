@@ -81,7 +81,7 @@ if lora_type.lower() == "locon":
   network_args = [f"conv_dim={conv_dim}", f"conv_alpha={conv_alpha}"]
 
 
-def validate_dataset(images_folder):
+def validate_dataset(images_folder, project_name):
   
   global lr_warmup_steps, lr_warmup_ratio, caption_extension, keep_tokens, keep_tokens_weight, weighted_captions, adjust_tags
   supported_types = (".png", ".jpg", ".jpeg", ".webp", ".bmp")
@@ -367,7 +367,7 @@ def main():
     for dir in (main_dir, deps_dir, repo_dir, log_folder, images_folder, output_folder, config_folder):
         os.makedirs(dir, exist_ok=True)
 
-    if not validate_dataset(images_folder):
+    if not validate_dataset(images_folder, project_name):
         return
     
     create_config(
