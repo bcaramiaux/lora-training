@@ -18,7 +18,7 @@ else:
 pipe = sd_pipeline.from_single_file("./{}".format(inference_config['models'][0])).to("cuda")
 
 # dataset name
-dataset_names = inference_config["datasets"][0]
+dataset_name = inference_config["datasets"][0]
 
 # prompts
 prompts = inference_config["prompts"]
