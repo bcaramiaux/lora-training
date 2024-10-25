@@ -66,7 +66,7 @@ for prompt in prompts:
                     parents=True, exist_ok=True)
 
             filename = os.path.join(
-                output_path_root, "image_{}_scale={:.4f}.jpg".format(
+                output_path_root, output_foldername, "image_{}_scale={:.4f}.jpg".format(
                     output_foldername,
                     lscale))
             print("saving:", filename)
