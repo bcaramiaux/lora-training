@@ -12,11 +12,11 @@ with open('config.yml', 'r') as file:
     inference_config = yaml.safe_load(file)
 
 # base model
-if "sd_xl_base" in inference_config['models'][0]:
+if "sd_xl_base" in inference_config['base_models'][0]:
     sd_pipeline = StableDiffusionXLPipeline
 else:
     sd_pipeline = StableDiffusionPipeline
-pipe = sd_pipeline.from_single_file("./{}".format(inference_config['models'][0])).to("cuda")
+pipe = sd_pipeline.from_single_file("./{}".format(inference_config['base_models'][0])).to("cuda")
 
 # dataset name
 dataset_name = inference_config["datasets"][0]
@@ -25,13 +25,17 @@ dataset_name = inference_config["datasets"][0]
 prompts = inference_config["prompts"]
 
 # model checkpoints
-epoch_min = inference_config["loop_epochs"]["epoch_min"]
-epoch_max = inference_config["loop_epochs"]["epoch_max"]
+if "loop_epochs" in inference_config.keys():
+    epoch_min = inference_config["loop_epochs"]["epoch_min"]
+    epoch_max = inference_config["loop_epochs"]["epoch_max"]
+    epochs = np.arange(epoch_min, epoch_max)
+else:
+    epochs = inference_config["epochs"]
 
-for prompt in prompts:
-    output_path = "outputs/ds={}_prompt={}_seed={}".format(dataset_name, prompt.replace(" ", "-"), inference_config['seed'])
-    pathlib.Path(output_path).mkdir(parents=True, exist_ok=True)
-    for k in range(epoch_min, epoch_max):
+output_path_root = 'outputs/'
+
+for prompt in prompts:   
+    for k in epochs:
         number = '{}'.format(k)
         number_filled = number.zfill(6)
         pipe.load_lora_weights(
@@ -52,11 +56,18 @@ for prompt in prompts:
             ).images[0]
 
             # timestr = time.strftime("%Y%m%d-%H%M%S")
+            output_foldername = "ds={}_prompt={}_model={}_seed={}".format(
+                dataset_name, 
+                prompt.replace(" ", "-"), 
+                number_filled, 
+                inference_config['seed'])
+            pathlib.Path(
+                os.path.join(output_path_root, output_foldername)).mkdir(
+                    parents=True, exist_ok=True)
+
             filename = os.path.join(
-                output_path, "image_ds={}_prompt={}_model={}_scale={:.4f}.jpg".format(
-                    dataset_name, 
-                    prompt.replace(" ", "-"),
-                    number_filled, 
+                output_path, "image_{}_scale={:.4f}.jpg".format(
+                    output_foldername,
                     lscale))
             print("saving:", filename)
             image.save(filename)
